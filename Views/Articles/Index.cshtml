@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> userManager
+@model IEnumerable<WebApplication2.Models.Article>
+
+@{
+    ViewData["Title"] = "All Articles";
+}
+
+<h1>All Articles</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+@foreach (var item in Model)
+{
+    <div class="card text-center article shadow" style="margin-left:180px;margin-right:180px; margin-bottom:30px; margin-top:30px;">
+        <div class="card-header" style="font-weight:bold;">
+            @{
+                var userid = (string)item.UserId;
+            }
+            
+            @userManager.Users.FirstOrDefault(m => m.Id == userid).Email
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">@item.Head</h5>
+            <p class="card-text">@item.Body</p>
+            @if (userManager.GetUserId(User) == item.UserId)
+            {
+                <a class="btn btn-light" style="margin-right:10px;width:150px;" asp-action="Edit" asp-route-id="@item.ArticleId">Edit</a>
+                <a class="btn btn-light" style="margin-right:10px;width:150px;" asp-action="Details" asp-route-id="@item.ArticleId">Show</a>
+                <a class="btn btn-light" style="margin-right:10px;width:150px;" asp-action="Delete" asp-route-id="@item.ArticleId">Delete</a>
+                <a class="btn btn-light"  asp-controller="Comments" asp-action="Create" asp-route-id="@item.ArticleId">Add Comment</a>
+
+            }
+            else
+            {
+                <a class="btn btn-light" style="margin-right:10px; width:150px;" asp-action="Details" asp-route-id="@item.ArticleId">Show</a>
+                <a class="btn btn-light" style="margin-right:10px;width:150px;" asp-controller="Comments" asp-action="Create" asp-route-id="@item.ArticleId">Add Comment</a>
+            }
+        </div>
+        <div class="card-footer text-muted" style="">
+            @item.CreatedAt
+        </div>
+    </div>
+    <hr style="width:50%;"/>
+}

@@ -1,0 +1,35 @@
+﻿@model WebApplication2.Models.Comment
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1 class="text-center">Edit Comment</h1>
+<p class="text-center">This is the page where you can edit comment!</p>
+<hr />
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="CommentId" />
+            <input asp-for="ArticleId" type="hidden" class="form-control" />
+            <input asp-for="UserId" type="hidden" class="form-control" />
+            <div class="form-group">
+                <label asp-for="CommentBody" class="control-label"></label>
+                <input asp-for="CommentBody" class="form-control" />
+                <span asp-validation-for="CommentBody" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Articles" asp-action="Index">Go back</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> userManager
+@model WebApplication2.Models.Article
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1 class="text-center">Details</h1>
+
+<div>
+    <h4>Article</h4>
+    <hr />
+
+    <div class="card text-center article shadow" style="margin-left:180px;margin-right:180px; margin-top:30px;">
+        <div class="card-header" style="font-weight:bold;">
+            @Model.User
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">@Html.DisplayFor(model => model.Head)</h5>
+            <p class="card-text">@Html.DisplayFor(model => model.Body)</p>
+            @if (userManager.GetUserId(User) == @Model.UserId)
+            {
+                <a class="btn btn-light" style="margin-right:10px;width:150px;" asp-action="Edit" asp-route-id=" @Model.ArticleId">Edit</a>
+                <a class="btn btn-light" style="margin-right:10px;width:150px;" asp-action="Delete" asp-route-id=" @Model.ArticleId">Delete</a>
+                <a class="btn btn-light" style="margin-right:10px;width:150px;" asp-controller="Comments" asp-action="Create" asp-route-id=" @Model.ArticleId">Add Comment</a>
+
+            }
+            else
+            {
+                <a class="btn btn-light" style="margin-right:10px;width:150px;" asp-controller="Comments" asp-action="Create" asp-route-id=" @Model.ArticleId">Add Comment</a>
+            }
+            @if (ViewBag.likes.Count == 0)
+            {
+                <a class="btn btn-light" asp-controller="Likes" asp-action="Create" asp-route-id=" @Model.ArticleId">Like</a>
+            }
+            else
+            {
+                @foreach (var like in ViewBag.likes)
+                {
+                    <a class="btn btn-danger" asp-controller="Likes" asp-action="Delete" asp-route-id=" @like.LikeId">Dislike</a>
+                }
+            }
+        </div>
+        <div class="card-footer text-muted" style="">
+            <p><span style="margin-right:10px;">@Model.CreatedAt</span> | <span style="margin-left:10px;"><b>@ViewBag.alllikes.Count likes</b></span></p>
+        </div>
+    </div>
+    @if (ViewBag.comments != null)
+    {
+        
+        <div class="card pl-3 pt-1 article shadow" style="margin-left:180px;margin-right:180px;">
+            <h5>Comments</h5>
+            @foreach (var comment in ViewBag.comments)
+            {
+                <div class="media">
+                    <div class="media-body">
+                        <br>
+                        @{
+                            var userid = (string)comment.UserId;
+                        }
+                        <h5 class="mt-0">@userManager.Users.FirstOrDefault(m => m.Id == userid).Email : <span style="color:black;"> @comment.CommentBody </span> </h5>
+                        <p>
+                            <small>
+                                @comment.CreatedAt
+                                <span style="margin-left:60%;">
+                                    @if (userManager.GetUserId(User) == comment.UserId)
+                                    {
+                                    <a asp-controller="Comments" asp-action="Edit" asp-route-id="@comment.CommentId">edit</a>
+                                    <a asp-controller="Comments" asp-action="Delete" asp-route-id="@comment.CommentId">delete</a>
+                                    }
+                                </span>
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+
+    }
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
